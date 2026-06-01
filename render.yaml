@@ -1,0 +1,24 @@
+# Render Blueprint — deploys the app as a Docker web service on the free tier.
+# Postgres is provided externally (Supabase/Neon); set DATABASE_URL in the
+# Render dashboard. See DEPLOY_RENDER.md.
+services:
+  - type: web
+    name: pets-trading
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL # Supabase/Neon connection string — set in dashboard (not in git)
+        sync: false
+      - key: INITIAL_CASH
+        value: "500"
+      - key: SUPPLY_PER_BREED
+        value: "3"
+      - key: VALUATION_INTERVAL_MS
+        value: "60000"
+      - key: AGE_PER_TICK
+        value: "1"
+      - key: POLL_INTERVAL
+        value: "3"

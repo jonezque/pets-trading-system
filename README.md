@@ -69,10 +69,12 @@ All tunables are env vars (see [.env.example](.env.example)):
 
 ## Deploy (GCP)
 
-Two paths, by cost:
+Paths, by goal:
 
-- **$0 / Always-Free** — single `e2-micro` VM running app + Postgres via Docker
-  Compose. Genuinely free. See **[DEPLOY_FREE.md](DEPLOY_FREE.md)** ([infra/gce-free/](infra/gce-free/)).
+- **Live demo, no credit card** — app on **Render** (free Docker host) + **Supabase**
+  Postgres. Quickest clickable URL. See **[DEPLOY_RENDER.md](DEPLOY_RENDER.md)**.
+- **$0 / Always-Free on GCP** — single `e2-micro` VM running app + Postgres via Docker
+  Compose. See **[DEPLOY_FREE.md](DEPLOY_FREE.md)** ([infra/gce-free/](infra/gce-free/)).
 - **Managed services** — Cloud Run + Cloud SQL (better production shape; Cloud SQL
   ~$10/mo, use with the $300 trial credit). [infra/](infra/):
 
