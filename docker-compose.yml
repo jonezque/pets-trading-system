@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: pets
+      POSTGRES_PASSWORD: pets
+      POSTGRES_DB: pets
+    # Host port for optional external access; the app reaches the db over the
+    # compose network as `db:5432` regardless. Mapped high to avoid clashing
+    # with a local Postgres on 5432.
+    ports:
+      - "5544:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pets -d pets"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgres://pets:pets@db:5432/pets
+      INITIAL_CASH: 500
+      SUPPLY_PER_BREED: 3
+      VALUATION_INTERVAL_MS: 60000
+      AGE_PER_TICK: 1
+      FLUCTUATION: 0.05
+      POLL_INTERVAL: 3
+    ports:
+      - "3000:3000"
+    # Hot-reload source in dev without rebuilding the image.
+    volumes:
+      - ./src:/app/src
+    command: ["bun", "--watch", "src/index.ts"]
+
+volumes:
+  pgdata:

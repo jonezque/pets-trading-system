@@ -1,0 +1,18 @@
+node_modules/
+bun.lockb
+.env
+.env.local
+dist/
+*.log
+
+# Terraform
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/.terraform.lock.hcl
+infra/*.tfvars
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

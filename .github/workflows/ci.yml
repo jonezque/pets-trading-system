@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: pets
+          POSTGRES_PASSWORD: pets
+          POSTGRES_DB: pets
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pets -d pets"
+          --health-interval 3s --health-timeout 3s --health-retries 10
+    env:
+      DATABASE_URL: postgres://pets:pets@localhost:5432/pets
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.11"
+      - run: bun install
+      - name: Run tests (domain + integration)
+        run: bun test
+
+  terraform-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Format check
+        run: terraform -chdir=infra fmt -check
+      - name: Validate
+        run: terraform -chdir=infra init -backend=false && terraform -chdir=infra validate

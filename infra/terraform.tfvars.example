@@ -1,0 +1,4 @@
+# Copy to terraform.tfvars and fill in. `image` is normally injected by CI.
+project_id = "my-gcp-project"
+region     = "europe-west1"
+image      = "europe-west1-docker.pkg.dev/my-gcp-project/pets/app:latest"
