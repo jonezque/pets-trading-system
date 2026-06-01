@@ -53,12 +53,12 @@ export function TraderPanel(d: PanelData) {
 
       <h2>Buy new pet</h2>
       <form class="inline" hx-post={`/trader/${trader.id}/buy`} hx-target={`#panel-${trader.id}`} hx-swap="outerHTML">
-        <select name="breed_id">
+        <select id={`buy-breed-${trader.id}`} name="breed_id">
           {buyable.map((b) => (
             <option value={b.breedId}>{b.breed} — {m(b.basePrice)} ({b.remaining} left)</option>
           ))}
         </select>
-        <input type="number" name="qty" value="1" min="1" />
+        <input id={`buy-qty-${trader.id}`} type="number" name="qty" value="1" min="1" />
         <button type="submit" disabled={buyable.length === 0}>Buy</button>
       </form>
 
@@ -122,7 +122,7 @@ function InventoryRow({ trader, p }: { trader: Trader; p: InventoryItem }) {
           {!p.listingId ? (
             <form class="inline" hx-post={`/trader/${trader.id}/list`} hx-target={`#panel-${trader.id}`} hx-swap="outerHTML">
               <input type="hidden" name="pet_id" value={p.id} />
-              <input type="number" name="asking_price" placeholder="price" min="1" step="1" />
+              <input id={`list-price-${p.id}`} type="number" name="asking_price" placeholder="price" min="1" step="1" />
               <button type="submit">List</button>
             </form>
           ) : (
@@ -180,12 +180,12 @@ export function MarketView(d: MarketData) {
                 <td>{l.highestBid !== null ? m(l.highestBid) : <span class="muted">—</span>}</td>
                 <td>
                   <form class="inline" hx-post={`/listings/${l.listingId}/bid`} hx-target="#market" hx-swap="outerHTML">
-                    <select name="trader_id">
+                    <select id={`bid-trader-${l.listingId}`} name="trader_id">
                       {traders.filter((t) => t.id !== l.sellerId).map((t) => (
                         <option value={t.id}>{t.name}</option>
                       ))}
                     </select>
-                    <input type="number" name="amount" placeholder="$" min="1" step="1" />
+                    <input id={`bid-amount-${l.listingId}`} type="number" name="amount" placeholder="$" min="1" step="1" />
                     <button type="submit">Bid</button>
                   </form>
                 </td>

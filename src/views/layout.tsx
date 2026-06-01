@@ -12,6 +12,10 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => (
       {/* idiomorph: morph-style swaps preserve focus + the value of the input
           the user is editing, so the 3s polling never steals focus mid-typing. */}
       <script src="https://unpkg.com/idiomorph@0.7.3/dist/idiomorph-ext.min.js"></script>
+      {/* Keep the value of the focused input untouched during a morph (default
+          would overwrite it with the server-rendered empty value). Focus itself
+          is restored by id (restoreFocus is on by default). */}
+      <script>{`if (window.Idiomorph) { Idiomorph.defaults.ignoreActiveValue = true; }`}</script>
       <style>{CSS}</style>
     </head>
     <body hx-ext="morph">{children}</body>
