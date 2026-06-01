@@ -69,11 +69,18 @@ All tunables are env vars (see [.env.example](.env.example)):
 
 ## Deploy (GCP)
 
-```bash
-cd infra
-cp terraform.tfvars.example terraform.tfvars   # set project_id, image
-terraform init && terraform apply
-```
+Two paths, by cost:
 
-CI/CD: pushes to `main` build & push the image to Artifact Registry and apply
-Terraform (Cloud Run + Cloud SQL). See [.github/workflows](.github/workflows).
+- **$0 / Always-Free** — single `e2-micro` VM running app + Postgres via Docker
+  Compose. Genuinely free. See **[DEPLOY_FREE.md](DEPLOY_FREE.md)** ([infra/gce-free/](infra/gce-free/)).
+- **Managed services** — Cloud Run + Cloud SQL (better production shape; Cloud SQL
+  ~$10/mo, use with the $300 trial credit). [infra/](infra/):
+
+  ```bash
+  cd infra
+  cp terraform.tfvars.example terraform.tfvars   # set project_id, image
+  terraform init && terraform apply
+  ```
+
+CI/CD: [.github/workflows](.github/workflows) runs tests + `terraform validate` on
+every push; the deploy workflow (Cloud Run) is manual until GCP secrets are set.
