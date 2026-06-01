@@ -14,10 +14,12 @@ const m = (n: number) => `$${n.toFixed(2)}`;
 
 // Pollable fragments refresh on an interval AND whenever a mutation fires the
 // `refresh` event on <body> (via the HX-Trigger response header).
+// `morph:outerHTML` patches the DOM in place (via idiomorph) instead of
+// replacing it, so a poll never steals focus from an input being edited.
 const pollAttrs = (url: string) => ({
   "hx-get": url,
   "hx-trigger": `every ${poll}s, refresh from:body`,
-  "hx-swap": "outerHTML",
+  "hx-swap": "morph:outerHTML",
 });
 
 // ---- Trader panel ----------------------------------------------------------

@@ -9,9 +9,12 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => (
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>Pets Trading System</title>
       <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+      {/* idiomorph: morph-style swaps preserve focus + the value of the input
+          the user is editing, so the 3s polling never steals focus mid-typing. */}
+      <script src="https://unpkg.com/idiomorph@0.7.3/dist/idiomorph-ext.min.js"></script>
       <style>{CSS}</style>
     </head>
-    <body>{children}</body>
+    <body hx-ext="morph">{children}</body>
   </html>
 );
 
