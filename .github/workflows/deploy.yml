@@ -4,9 +4,9 @@ name: Deploy
 # deploy a new Cloud Run revision. Auth via Workload Identity Federation
 # (no long-lived service-account keys).
 
+# Manual trigger only: enable the push trigger once the GCP secrets
+# (GCP_WIF_PROVIDER, GCP_DEPLOY_SA, GCP_PROJECT_ID) are configured.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 env:
