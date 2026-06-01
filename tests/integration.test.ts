@@ -1,4 +1,4 @@
-import { afterAll, beforeEach, describe, expect, test } from "bun:test";
+import { beforeEach, describe, expect, test } from "bun:test";
 import { sql } from "../src/db/pool.ts";
 import * as trade from "../src/domain/trading.ts";
 import { TradeError } from "../src/domain/trading.ts";
@@ -12,10 +12,6 @@ let A: number, B: number, C: number;
 beforeEach(async () => {
   await resetDb();
   [A, B, C] = await traderIds();
-});
-
-afterAll(async () => {
-  await sql.end();
 });
 
 describe("new-supply purchases", () => {
@@ -192,6 +188,36 @@ describe("trade execution", () => {
     const bid = (await activeBidId(listing))!;
     await trade.withdrawBid(B, bid);
     await expect(trade.acceptBid(A, bid)).rejects.toThrow(TradeError);
+  });
+});
+
+describe("trader data scoping (Q4 privacy)", () => {
+  test("inventory is scoped to the owning trader only", async () => {
+    await trade.buyFromSupply(A, await breedId("Labrador"), 2);
+    await trade.buyFromSupply(B, await breedId("Goldfish"), 1);
+
+    const invA = await q.getInventory(A);
+    const invB = await q.getInventory(B);
+    expect(invA).toHaveLength(2);
+    expect(invB).toHaveLength(1);
+    expect(invA.every((p) => p.ownerId === A)).toBe(true);
+    expect(invB.every((p) => p.ownerId === B)).toBe(true);
+    // No overlap between traders' pets.
+    const aIds = new Set(invA.map((p) => p.id));
+    expect(invB.some((p) => aIds.has(p.id))).toBe(false);
+  });
+
+  test("locked cash reflects only the trader's own active bids", async () => {
+    // A lists a pet; B and C each lock cash elsewhere — A's locked must stay 0.
+    await trade.buyFromSupply(A, await breedId("Poodle"), 1);
+    const pet = await firstPetOf(A);
+    await trade.createListing(A, pet, 50);
+    const listing = (await activeListingId(pet))!;
+    await trade.placeBid(B, listing, 55);
+
+    expect((await q.getMoney(A)).locked).toBe(0); // seller locks nothing
+    expect((await q.getMoney(B)).locked).toBe(55);
+    expect((await q.getMoney(C)).locked).toBe(0);
   });
 });
 

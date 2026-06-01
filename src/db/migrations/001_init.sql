@@ -81,6 +81,7 @@ CREATE TABLE IF NOT EXISTS notifications (
   message         TEXT    NOT NULL,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+-- Note: notifications are shown chronologically (no read/unread state in this demo).
 
 CREATE INDEX IF NOT EXISTS idx_notifications_trader ON notifications (trader_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_pets_owner ON pets (owner_id);

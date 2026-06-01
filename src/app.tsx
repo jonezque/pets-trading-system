@@ -51,6 +51,21 @@ function intParam(c: any, name: string): number {
 export function createApp() {
   const app = new Hono();
 
+  // Structured JSON request log: method, path, status, latency (ms).
+  app.use("*", async (c, next) => {
+    const start = Date.now();
+    await next();
+    const path = new URL(c.req.url).pathname;
+    if (path === "/healthz") return; // skip readiness-probe noise
+    console.log(JSON.stringify({
+      level: "info",
+      method: c.req.method,
+      path,
+      status: c.res.status,
+      ms: Date.now() - start,
+    }));
+  });
+
   app.get("/healthz", (c) => c.json({ status: "ok" }));
 
   app.get("/", async (c) => {

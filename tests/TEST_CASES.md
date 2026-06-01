@@ -7,6 +7,11 @@ automated test that covers it where applicable.
 
 Legend: ✅ automated (`bun test`) · 📋 manual/UI · 🔢 formula vector
 
+Automated suites: `domain.test.ts` (tick transitions), `formula.test.ts` (both
+formulas), `engine.test.ts` (aging/expiry/clamping vs DB), `routes.test.ts`
+(HTTP layer + HX-Trigger + error path), `integration.test.ts` (trading flows +
+data scoping). 60 tests.
+
 ---
 
 ## 1. Valuation & Pet Lifecycle
@@ -80,7 +85,7 @@ Legend: ✅ automated (`bun test`) · 📋 manual/UI · 🔢 formula vector
 |---|----------|----------|-------|-----|
 | F1 | Portfolio = available + locked + pets value | correct sum | §2.1, Q23 | ✅ |
 | F2 | Leaderboard ranks by total portfolio | descending order | 5.8, Q23 | ✅ |
-| F3 | Trader privacy | a panel never renders another trader's cash/inventory | Q4 | 📋 |
+| F3 | Trader data scoping | inventory + locked cash scoped to the owning trader only | Q4 | ✅ |
 
 ## 7. Notifications
 

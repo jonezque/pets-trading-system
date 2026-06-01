@@ -1,0 +1,3 @@
+[test]
+# Close the shared DB pool exactly once after the whole run.
+preload = ["./tests/setup.ts"]
