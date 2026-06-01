@@ -12,6 +12,9 @@ infra/*.tfstate.*
 infra/.terraform.lock.hcl
 infra/*.tfvars
 
+# Supabase CLI local scaffolding (not part of the app; managed via Management API)
+supabase/
+
 # OS / editor
 .DS_Store
 .idea/
